@@ -70,11 +70,11 @@ def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay
             input_form()
             if not coord:  # 空欄だったら処理しない
                 continue
-            print("画像を保存します。ファイル名" + base_path + coord + "_" + strngr + "_" + str(id) + "." + ext)
-            cv2.imwrite('{}{}_{}_{}.{}'.format(base_path, coord, strngr, id, ext), frame)
+            print("画像を保存します。ファイル名", base_path, "_", id, "_", strngr, "_", coord, ".", ext, sep="")
+            cv2.imwrite('{}_{}_{}_{}.{}'.format(base_path, id, strngr, coord, ext), frame)
             id += 1
     cv2.destroyWindow(window_name)
 
 #データの保存場所
 #3つ目の項目が撮影間隔（cycle）fps30で撮影しているため、cycle/30=撮影間隔（秒）となる　例cycle=60 60/30= 2 (秒間隔)
-save_frame_camera_key(0, 'data', 'xK_',60)
+save_frame_camera_key(0, 'data', 'xK',60)
