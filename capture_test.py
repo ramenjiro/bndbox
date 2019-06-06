@@ -13,25 +13,20 @@ def input_form():
 
         # Entryウィジェットのテキストを読み取るgetメソッド
         global coord
-        coord = txt.get()
-
-        if not coord:
-            # 空欄だったら処理しない
-            pass
-
+        coord = txt.get().upper()
         root.destroy()
 
     # ウィンドウの定義
     root = tk.Tk()
     root.title(u"Coordinate input")
-    root.geometry("300x300")
+    root.geometry("700x200")
 
     # フレームの定義
     frame =tk.Frame(root, pady=10)
     frame.pack()
 
     # ラベル
-    label = tk.Label(frame, font=("",14), text="座標->")
+    label = tk.Label(frame, font=("",14), text="座標 -->  ")
     label.pack(side="left")
 
     # テキストボックス
@@ -40,11 +35,15 @@ def input_form():
     txt.pack(side="left")
 
     # エンターキーで入力
-    root.bind("<Return>", coord_get)
+    root.bind("<Return>", lambda event: coord_get())
 
     # ボタンでも入力できるように
-    button = tk.Button(root, text="確定", font=("",15), width=10, bg="gray", command=coord_get)
+    button = tk.Button(root, text="確定", font=("",10), width=10, bg="gray", command=coord_get)
     button.pack()
+
+    # 注意書きを表示
+    caution = tk.Label(root, font=("",10), text="※ 保存しない場合は、何も入力しない")
+    caution.pack()
 
     # メインループ
     root.mainloop()
@@ -69,8 +68,10 @@ def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay
         elif key == ord('c'):
             strngr = "CYM"
             input_form()
-            print("画像を保存します。ファイル名" + base_path + strngr + "_" + coord + "_"+str(id)+"." + ext)
-            cv2.imwrite('{}{}_{}_{}.{}'.format(base_path,strngr, coord, id, ext), frame)
+            if not coord:  # 空欄だったら処理しない
+                continue
+            print("画像を保存します。ファイル名" + base_path + coord + "_" + strngr + "_" + str(id) + "." + ext)
+            cv2.imwrite('{}{}_{}_{}.{}'.format(base_path, coord, strngr, id, ext), frame)
             id += 1
     cv2.destroyWindow(window_name)
 
