@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+# ライブラリのインポート
 import cv2
 import os
 import tkinter as tk
@@ -8,17 +9,17 @@ import sys
 # 座標を入力するためのウィンドウを表示する関数
 def input_form():
 
-    # 確定ボタンが押された時のコールバック関数
+    # 確定ボタン or Enter が押された時のコールバック関数
     def coord_get():
 
         # Entryウィジェットのテキストを読み取るgetメソッド
         global coord
         coord = txt.get().upper()
-        root.destroy()
+        root.destroy()  # GUIを落とす
 
     # ウィンドウの定義
     root = tk.Tk()
-    root.title(u"Coordinate input")
+    root.title(u"Coordinate Input")
     root.geometry("700x200")
 
     # フレームの定義
@@ -48,7 +49,7 @@ def input_form():
     # メインループ
     root.mainloop()
 
-def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay=1, window_name='frame'):
+def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay=1, window_name='Footage'):
 
     cap = cv2.VideoCapture(device_num)
     base_path="/home/user/Documents/data/"
