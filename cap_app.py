@@ -23,7 +23,7 @@ def input_form():
     root.geometry("700x200")
 
     # フレームの定義
-    frame =tk.Frame(root, pady=10)
+    frame = tk.Frame(root, pady=10)
     frame.pack()
 
     # ラベル
@@ -53,7 +53,6 @@ def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay
 
     cap = cv2.VideoCapture(device_num)
     base_path="/home/user/Documents/data/"
-    id = 35
     if not cap.isOpened():
         return
 
@@ -62,6 +61,8 @@ def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay
 
     while True:
         ret, frame = cap.read()
+        with open("id.txt", "r") as f:
+            id = int(f.read())
         cv2.imshow(window_name, frame)
         key = cv2.waitKey(delay)
         if key == ord('q'):
@@ -74,6 +75,8 @@ def save_frame_camera_key(device_num, dir_path, basename,cycle, ext='jpg', delay
             print("画像を保存します。ファイル名", base_path, "_", id, "_", strngr, "_", coord, ".", ext, sep="")
             cv2.imwrite('{}_{}_{}_{}.{}'.format(base_path, id, strngr, coord, ext), frame)
             id += 1
+            with open ("id.txt", "w") as f:
+                f.write(str(id))
     cv2.destroyWindow(window_name)
 
 #データの保存場所
