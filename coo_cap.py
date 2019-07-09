@@ -1,6 +1,6 @@
+import os, sys
 import numpy as np
 import cv2
-
 
 class PointList():
     def __init__(self, npoints):
@@ -28,7 +28,7 @@ def onMouse(event, x, y, flag, params):
             cv2.rectangle(img3,
                           (x_list[0], y_list[1]),
                           (x_list[1], y_list[0]),
-                          color=(255, 255, 0),
+                          color=(0, 255, 255),
                           thickness=1)
             cv2.imshow(wname, img3)
         else:
@@ -40,19 +40,20 @@ def onMouse(event, x, y, flag, params):
 
     if event == cv2.EVENT_LBUTTONDOWN:  # レフトボタンをクリックしたとき、ptlist配列にx,y座標を格納する
         if ptlist.add(x, y):
-            print('[%d] ( %d, %d )' % (ptlist.pos - 1, x, y))
             cv2.circle(img, (x, y), 3, (0, 0, 255), 3)
             cv2.imshow(wname, img)
         else:
-            print('All points have selected.  Press ESC-key.')
+            print('All points have selected.')
         if ptlist.pos == ptlist.npoints:
+            global upper_left
+            global lower_right
+            upper_left = [np.min(ptlist.ptlist, axis=0)[0], np.max(ptlist.ptlist, axis=0)[1]]
+            lower_right = [np.max(ptlist.ptlist, axis=0)[0], np.min(ptlist.ptlist, axis=0)[1]]
             cv2.rectangle(img,
-                          (np.min(ptlist.ptlist, axis=0)[0],
-                           np.max(ptlist.ptlist, axis=0)[1]),
-                          (np.max(ptlist.ptlist, axis=0)[0],
-                           np.min(ptlist.ptlist, axis=0)[1]),
+                          (upper_left[0], upper_left[1]),
+                          (lower_right[0], lower_right[1]),
                           color=(0, 255, 0),
-                          thickness=2)
+                          thickness=1)
 
 if __name__ == '__main__':
     img = cv2.imread("/Users/kwhtsng/coo_cap/data/000007.jpg")
@@ -62,6 +63,10 @@ if __name__ == '__main__':
     ptlist = PointList(npoints)
     cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
     cv2.imshow(wname, img)
-    cv2.waitKey()
+    while(True):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            break
+    print(upper_left, lower_right)
     cv2.destroyAllWindows()
 
