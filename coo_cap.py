@@ -1,6 +1,68 @@
-import os, sys
+import os
+import sys
+import xml.etree.ElementTree as et
 import numpy as np
 import cv2
+
+
+def mkXml(folder, filename, path, size, names,
+        bndboxes, database="Unknown", segmented=0,
+        pose="Unspecified", truncated=0, difficult=0
+        ):
+
+    a             = et.Element("annotation")
+    tree          = et.ElementTree(element=a)
+
+    a_folder      = et.SubElement(a, "folder")
+    a_folder.text = str(folder)
+
+    a_file        = et.SubElement(a, "filename")
+    a_file.text   = str(filename)
+
+    a_path        = et.SubElement(a, "path")
+    a_path.text   = str(path)
+
+    a_size        = et.SubElement(a, "size")
+    size_w        = et.SubElement(a_size, "width")
+    size_w.text   = str(size[0])
+    size_h        = et.SubElement(a_size, "height")
+    size_h.text   = str(size[1])
+    size_d        = et.SubElement(a_size, "depth")
+    size_d.text   = str(size[2])
+
+    a_seg         = et.SubElement(a, "segmented")
+    a_seg.text    = str(segmented)
+
+    for i, name in enumerate(names):
+        a_object              = et.SubElement(a, "object")
+
+        object_name           = et.SubElement(a_object, "name")
+        object_name.text      = str(name)
+
+        object_pose           = et.SubElement(a_object, "pose")
+        object_pose.text      = str(pose)
+
+        object_truncated      = et.SubElement(a_object, "truncated")
+        object_truncated.text = str(truncated)
+
+        object_difficult      = et.SubElement(a_object, "difficult")
+        object_difficult.text = str(difficult)
+
+        object_bndbox         = et.SubElement(a_object, "bndbox")
+
+        bndbox_xmin           = et.SubElement(object_bndbox, "xmin")
+        bndbox_xmin.text      = str(bndboxes[i][0])
+
+        bndbox_ymin           = et.SubElement(object_bndbox, "ymin")
+        bndbox_ymin.text      = str(bndboxes[i][1])
+
+        bndbox_xmax           = et.SubElement(object_bndbox, "xmax")
+        bndbox_xmax.text      = str(bndboxes[i][2])
+
+        bndbox_ymax           = et.SubElement(object_bndbox, "ymax")
+        bndbox_ymax.text      = str(bndboxes[i][3])
+
+    tree.write(filename + ".xml", encoding="utf-8", xml_declaration=True)
 
 class PointList():
     def __init__(self, npoints):
@@ -44,7 +106,7 @@ def onMouse(event, x, y, flag, params):
             cv2.imshow(wname, img)
         else:
             print('All points have selected.')
-        if ptlist.pos == ptlist.npoints:
+        if ptlist.pos == 2:
             global upper_left
             global lower_right
             upper_left = [np.min(ptlist.ptlist, axis=0)[0], np.max(ptlist.ptlist, axis=0)[1]]
@@ -56,17 +118,35 @@ def onMouse(event, x, y, flag, params):
                           thickness=1)
 
 if __name__ == '__main__':
-    img = cv2.imread("/Users/kwhtsng/coo_cap/data/000007.jpg")
-    wname = "MouseEvent"
-    cv2.namedWindow(wname)
-    npoints = 2
-    ptlist = PointList(npoints)
-    cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
-    cv2.imshow(wname, img)
-    while(True):
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break
-    print(upper_left, lower_right)
-    cv2.destroyAllWindows()
+    for i in range(1):
+        condition = True
+        names     = []
+        bndboxs   = []
+        while(True):
+            img     = cv2.imread("/Users/kwhtsng/coo_cap/data/000007.jpg")
+            wname   = "MouseEvent"
+            cv2.namedWindow(wname)
+            npoints = 2
+            ptlist  = PointList(npoints)
+            cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
+            cv2.imshow(wname, img)
 
+            key = cv2.waitKey(0) & 0xFF
+
+            if key == ord("q"):
+                break
+
+            elif key == ord("a"):
+                names.append(input())
+                bndboxs.append([upper_left[0],
+                                lower_right[1],
+                                lower_right[0],
+                                upper_left[1]])
+
+            elif key == ord("c"):
+                continue
+
+            cv2.destroyAllWindows()
+
+        mkXml("data", "000007", "/Users/kwhtsng/coo_cap/data/000007.jpg",
+              [640, 480, 3], names, bndboxs)
