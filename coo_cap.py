@@ -1,5 +1,7 @@
 import os
 import sys
+import glob
+import re
 import xml.etree.ElementTree as et
 import numpy as np
 import cv2
@@ -62,7 +64,9 @@ def mkXml(folder, filename, path, size, names,
         bndbox_ymax           = et.SubElement(object_bndbox, "ymax")
         bndbox_ymax.text      = str(bndboxes[i][3])
 
-    tree.write(filename + ".xml", encoding="utf-8", xml_declaration=True)
+    tree.write("xml/" + filename + ".xml",
+                encoding="utf-8",
+                xml_declaration=True)
 
 class PointList():
     def __init__(self, npoints):
@@ -118,13 +122,18 @@ def onMouse(event, x, y, flag, params):
                           thickness=1)
 
 if __name__ == '__main__':
-    for i in range(1):
-        condition = True
+    cwd = os.getcwd()
+    files = glob.glob(cwd + "/data/*.jpg")
+    files.sort()
+    for file in files:
         names     = []
         bndboxs   = []
         while(True):
-            img     = cv2.imread("/Users/kwhtsng/coo_cap/data/000007.jpg")
-            wname   = "MouseEvent"
+            filename = file.split(".")
+            filename = filename[-2].split("/")
+            filename = filename[-1]
+            img     = cv2.imread(file)
+            wname   = file
             cv2.namedWindow(wname)
             npoints = 2
             ptlist  = PointList(npoints)
@@ -134,19 +143,22 @@ if __name__ == '__main__':
             key = cv2.waitKey(0) & 0xFF
 
             if key == ord("q"):
-                break
+                cv2.destroyAllWindows()
+                exit("終了します")
 
             elif key == ord("a"):
+                print("物体名(アルファベット)を入力してください（例：CYM）")
                 names.append(input())
                 bndboxs.append([upper_left[0],
                                 lower_right[1],
                                 lower_right[0],
                                 upper_left[1]])
+                cv2.destroyAllWindows()
+                break
 
             elif key == ord("c"):
                 continue
 
-            cv2.destroyAllWindows()
 
-        mkXml("data", "000007", "/Users/kwhtsng/coo_cap/data/000007.jpg",
+        mkXml("data", filename, file,
               [640, 480, 3], names, bndboxs)
