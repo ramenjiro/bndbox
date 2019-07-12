@@ -4,7 +4,7 @@
 - numpy
 - cv2
 - xml.etree.ElementTree
-    - 僕のmacには最初から入ってました<br><br>
+    - 僕のmacには最初から入ってました(多分標準ライブラリ)<br><br>
 ```
 python3 coo_cap.py
 ```
