@@ -1,7 +1,6 @@
 import os
 import sys
 import glob
-import re
 import xml.etree.ElementTree as et
 import numpy as np
 import cv2
