@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import xml.etree.ElementTree as et
+import xml.dom.minidom as md
 import numpy as np
 import cv2
 
@@ -63,9 +64,18 @@ def mkXml(folder, filename, path, size, names,
         bndbox_ymax           = et.SubElement(object_bndbox, "ymax")
         bndbox_ymax.text      = str(bndboxes[i][3])
 
-    tree.write("xml/" + filename + ".xml",
+    # 文字列パースを介してminidomへ移す
+    document = md.parseString(et.tostring(a_object, 'utf-8'))
+
+    f = "xml/" + filename + ".xml"
+
+    f = open(f, "w")
+    document.writexml(f,
                 encoding="utf-8",
-                xml_declaration=True)
+                newl='\n',
+                indent='',
+                addindent='    ')
+    f.close()
 
 class PointList():
     def __init__(self, npoints):
