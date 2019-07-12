@@ -118,7 +118,7 @@ def onMouse(event, x, y, flag, params):
             cv2.circle(img, (x, y), 3, (0, 0, 255), 3)
             cv2.imshow(wname, img)
         else:
-            print('All points have selected.')
+            print('これ以上選択できません。各キーで操作を行ってください。')
         if ptlist.pos == 2:
             global upper_left
             global lower_right
@@ -131,74 +131,86 @@ def onMouse(event, x, y, flag, params):
                           thickness=1)
 
 if __name__ == '__main__':
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("xml", exist_ok=True)
-    cwd = os.getcwd()
+    os.makedirs("data", exist_ok = True)
+    os.makedirs("xml",  exist_ok = True)
+
+    cwd   = os.getcwd()
     files = glob.glob(cwd + "/data/*.jpg")
+
     if not files:
         exit("画像がありませんでした。")
     files.sort()
-    index = 0
-    while(True):
-        con = False
-        for i, file in enumerate(files, index):
-            names     = []
-            bndboxs   = []
-            while(True):
-                filename = file.split(".")
-                filename = filename[-2].split("/")
-                filename = filename[-1]
-                img     = cv2.imread(file)
-                wname   = file
-                cv2.namedWindow(wname)
-                npoints = 2
-                ptlist  = PointList(npoints)
+
+    last_file = []
+    i         = 0
+
+    while(i < len(files)):
+        names    = []
+        bndboxs  = []
+
+        while(True):
+            filename = files[i].split(".")
+            filename = filename[-2].split("/")
+            filename = filename[-1]
+            img      = cv2.imread(files[i])
+            wname    = files[i]
+            cv2.namedWindow(wname)
+            npoints  = 2
+            ptlist   = PointList(npoints)
+            key      = ""
+
+            while(not key):
                 cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
                 cv2.imshow(wname, img)
-
                 key = cv2.waitKey(0) & 0xFF
 
-                if key == ord("q"):
-                    cv2.destroyAllWindows()
-                    exit("終了します。")
+            if key == ord("q"):
+                cv2.destroyAllWindows()
+                exit("終了します。")
 
-                elif key == ord("a"):
-                    print("物体名(アルファベット)を入力してください（例：CYM）。")
-                    names.append(input().upper())
+            elif key == ord("a"):
+                print("オブジェクト名(アルファベット)を入力してください。\n"
+                      "入力が無い場合、キャンセルされます。")
+                obj = input().upper()
+
+                if not obj:
+                    print("入力をキャンセルしました。")
+
+                else:
+                    names.append(obj)
                     bndboxs.append([upper_left[0],
                                    lower_right[1],
                                    lower_right[0],
                                    upper_left[1]])
-                    cv2.destroyAllWindows()
+                continue
+
+            elif key == ord("x"):
+                if not names:
+                    print("少なくともひとつ、オブジェクト名を入力してください。")
                     continue
 
-                elif key == ord("x"):
-                    print("xmlファイルを出力しました。\n"
-                          "ファイル名 => '" + filename + ".xml'")
-                    mkXml("data", filename, file,
-                          [640, 480, 3], names, bndboxs)
-                    cv2.destroyAllWindows()
-                    break
+                print("xmlファイルを出力しました。\n"
+                      "ファイル名 => '" + filename + ".xml'")
+                mkXml("data", filename, files[i],
+                      [640, 480, 3], names, bndboxs)
+                i += 1
 
-                elif key == ord("c"):
-                    print("座標指定をやり直します。")
-                    cv2.destroyAllWindows()
-                    continue
+            elif key == ord("c"):
+                print("座標指定をやり直します。")
+                continue
 
-                elif key == ord("n"):
-                    print("次の画像に進みました。")
-                    cv2.destroyAllWindows()
-                    break
+            elif key == ord("n"):
+                print("次の画像に進みました。")
+                i += 1
 
-                elif key == ord("b"):
-                    print("前の画像に戻りました。")
-                    cv2.destroyAllWindows()
-                    index = i - 1
-                    con = True
-                    break
+            elif key == ord("b"):
+                print("前の画像に戻りました。")
+                if i == 0:
+                    print("これ以上戻れません。")
+                else:
+                    i -= 1
 
-            if con:
-                break
+            cv2.destroyAllWindows()
+            break
 
-            elif i == len(files) - 1:
-                exit("全ての画像の座標登録が終わりました。")
+    print("全ての画像の座標登録が終わりました。")
