@@ -124,46 +124,67 @@ if __name__ == '__main__':
     cwd = os.getcwd()
     files = glob.glob(cwd + "/data/*.jpg")
     files.sort()
-    for file in files:
-        names     = []
-        bndboxs   = []
-        while(True):
-            filename = file.split(".")
-            filename = filename[-2].split("/")
-            filename = filename[-1]
-            img     = cv2.imread(file)
-            wname   = file
-            cv2.namedWindow(wname)
-            npoints = 2
-            ptlist  = PointList(npoints)
-            cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
-            cv2.imshow(wname, img)
+    index = 0
+    while(True):
+        con = False
+        for i, file in enumerate(files, index):
+            names     = []
+            bndboxs   = []
+            while(True):
+                filename = file.split(".")
+                filename = filename[-2].split("/")
+                filename = filename[-1]
+                img     = cv2.imread(file)
+                wname   = file
+                cv2.namedWindow(wname)
+                npoints = 2
+                ptlist  = PointList(npoints)
+                cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
+                cv2.imshow(wname, img)
 
-            key = cv2.waitKey(0) & 0xFF
+                key = cv2.waitKey(0) & 0xFF
 
-            if key == ord("q"):
-                cv2.destroyAllWindows()
-                exit("終了します")
+                if key == ord("q"):
+                    cv2.destroyAllWindows()
+                    exit("終了します。")
 
-            elif key == ord("a"):
-                print("物体名(アルファベット)を入力してください（例：CYM）")
-                names.append(input().upper())
-                bndboxs.append([upper_left[0],
-                               lower_right[1],
-                               lower_right[0],
-                               upper_left[1]])
-                cv2.destroyAllWindows()
+                elif key == ord("a"):
+                    print("物体名(アルファベット)を入力してください（例：CYM）。")
+                    names.append(input().upper())
+                    bndboxs.append([upper_left[0],
+                                   lower_right[1],
+                                   lower_right[0],
+                                   upper_left[1]])
+                    cv2.destroyAllWindows()
+                    continue
+
+                elif key == ord("x"):
+                    print("xmlファイルを出力しました。\n"
+                          "ファイル名 => '" + filename + ".xml'")
+                    mkXml("data", filename, file,
+                          [640, 480, 3], names, bndboxs)
+                    cv2.destroyAllWindows()
+                    break
+
+                elif key == ord("c"):
+                    print("座標指定をやり直します。")
+                    cv2.destroyAllWindows()
+                    continue
+
+                elif key == ord("n"):
+                    print("次の画像に進みました。")
+                    cv2.destroyAllWindows()
+                    break
+
+                elif key == ord("b"):
+                    print("前の画像に戻りました。")
+                    cv2.destroyAllWindows()
+                    index = i - 1
+                    con = True
+                    break
+
+            if con:
                 break
 
-            elif key == ord("c"):
-                print("座標指定をやり直します")
-                continue
-
-            elif key == ord("n"):
-                print("次の画像に進みました")
-                break
-
-
-
-        mkXml("data", filename, file,
-              [640, 480, 3], names, bndboxs)
+            elif i == len(files) - 1:
+                exit("全ての画像の座標登録が終わりました。")
