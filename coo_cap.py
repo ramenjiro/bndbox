@@ -121,8 +121,12 @@ def onMouse(event, x, y, flag, params):
                           thickness=1)
 
 if __name__ == '__main__':
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("xml", exist_ok=True)
     cwd = os.getcwd()
     files = glob.glob(cwd + "/data/*.jpg")
+    if not files:
+        exit("画像がありませんでした。")
     files.sort()
     index = 0
     while(True):
