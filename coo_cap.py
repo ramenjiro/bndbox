@@ -65,7 +65,7 @@ def mkXml(folder, filename, path, size, names,
         bndbox_ymax.text      = str(bndboxes[i][3])
 
     # 文字列パースを介してminidomへ移す
-    document = md.parseString(et.tostring(a_object, 'utf-8'))
+    document = md.parseString(et.tostring(a, 'utf-8'))
 
     f = "xml/" + filename + ".xml"
 
