@@ -147,16 +147,22 @@ if __name__ == '__main__':
 
             elif key == ord("a"):
                 print("物体名(アルファベット)を入力してください（例：CYM）")
-                names.append(input())
+                names.append(input().upper())
                 bndboxs.append([upper_left[0],
-                                lower_right[1],
-                                lower_right[0],
-                                upper_left[1]])
+                               lower_right[1],
+                               lower_right[0],
+                               upper_left[1]])
                 cv2.destroyAllWindows()
                 break
 
             elif key == ord("c"):
+                print("座標指定をやり直します")
                 continue
+
+            elif key == ord("n"):
+                print("次の画像に進みました")
+                break
+
 
 
         mkXml("data", filename, file,
