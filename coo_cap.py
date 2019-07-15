@@ -135,7 +135,7 @@ if __name__ == '__main__':
     os.makedirs("xml",  exist_ok = True)
 
     cwd   = os.getcwd()
-    files = glob.glob(cwd + "/data/*.jpg")
+    files = glob.glob("data/*.jpg")
 
     if not files:
         exit("画像がありませんでした。")
@@ -145,19 +145,18 @@ if __name__ == '__main__':
     i         = 0
 
     while(i < len(files)):
+        files[i] = os.path.abspath(files[i])
         names    = []
         bndboxs  = []
 
         while(True):
-            filename = files[i].split(".")
-            filename = filename[-2].split("/")
-            filename = filename[-1]
-            img      = cv2.imread(files[i])
-            wname    = files[i]
+            filename, ext = os.path.splitext(os.path.basename(files[i]))
+            img           = cv2.imread(files[i])
+            wname         = files[i]
             cv2.namedWindow(wname)
-            npoints  = 2
-            ptlist   = PointList(npoints)
-            key      = ""
+            npoints       = 2
+            ptlist        = PointList(npoints)
+            key           = ""
 
             while(not key):
                 cv2.setMouseCallback(wname, onMouse, [wname, img, ptlist])
