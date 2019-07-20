@@ -144,15 +144,6 @@ if __name__ == '__main__':
     last_file = []
     i         = 0
 
-    print("以下の操作を繰り返し、画像内のオブジェクトを選択してください。\n"
-          "    1. マウスを使ってオブジェクトを四角で囲む。\n"
-          "    2. A キーで確定、オブジェクト名を選択。\n")
-    print("その他操作\n"
-          "    N => 何もせず次の画像へ\n"
-          "    B => 何もせず前の画像へ\n"
-          "    C => 範囲選択のやりなおし\n"
-          "    Q => プログラムの終了\n")
-
     while(i < len(files)):
         files[i] = os.path.abspath(files[i])
         names    = []
@@ -174,12 +165,12 @@ if __name__ == '__main__':
 
             if key == ord("q"):
                 cv2.destroyAllWindows()
-                exit("終了します。\n")
+                exit("終了します。")
 
             elif key == ord("a"):
-                print("オブジェクトを、各キーで選択してください。\n"
-                      "    C => ウオノエ\n"
-                      "    Q => 入力をキャンセル\n")
+                print("オブジェクトを、各キーで選択してください。")
+                print("C => ウオノエ")
+                print("N => 入力をキャンセル")
 
                 key2 = ""
 
@@ -187,7 +178,7 @@ if __name__ == '__main__':
                     key2 = cv2.waitKey(0) & 0xFF
 
                 if key2 == ord("q"):
-                    print("入力をキャンセルしました。\n")
+                    print("入力をキャンセルしました。")
 
                 elif key2 == ord("c"):
                     names.append("Cymothoidae")
@@ -196,37 +187,38 @@ if __name__ == '__main__':
                                    lower_right[0],
                                    upper_left[1]])
                     print("オブジェクトを追加しました。")
-                    print("    オブジェクト名 => {}\n    座標 => (x min => {}, y min => {}, x max => {}, y max => {})\n".format(names[-1], bndboxs[-1][0], bndboxs[-1][1], bndboxs[-1][2], bndboxs[-1][3]))
-                    print("オブジェクトを全て選び終えた場合、X キーによって出力、次の画像へ。\n")
-                    continue
+                    print("オブジェクト名 => " + names[-1] + "\n" +
+                          "座標 (min x => " + bndboxs[-1[0]] + ", max x => " + bndboxs[-1[1]] +
+                          ", min y => " + bndboxs[-1[2]] + ", max y => " + bndboxs[-1[3]])
+                continue
 
             elif key == ord("x"):
                 if not names:
-                    print("少なくともひとつ、オブジェクト名を入力してください。\n")
+                    print("少なくともひとつ、オブジェクト名を入力してください。")
                     continue
 
                 print("xmlファイルを出力しました。\n"
-                      "    ファイル名 => '" + filename + ".xml'\n")
+                      "ファイル名 => '" + filename + ".xml'")
                 mkXml("data", filename, files[i],
                       [640, 480, 3], names, bndboxs)
                 i += 1
 
             elif key == ord("c"):
-                print("座標指定をやり直します。\n")
+                print("座標指定をやり直します。")
                 continue
 
             elif key == ord("n"):
-                print("次の画像に進みました。\n")
+                print("次の画像に進みました。")
                 i += 1
 
             elif key == ord("b"):
-                print("前の画像に戻りました。\n")
+                print("前の画像に戻りました。")
                 if i == 0:
-                    print("これ以上戻れません。\n")
+                    print("これ以上戻れません。")
                 else:
                     i -= 1
 
             cv2.destroyAllWindows()
             break
 
-    print("全ての画像の座標登録が終わりました。\n")
+    print("全ての画像の座標登録が終わりました。")
