@@ -1,4 +1,4 @@
-# coo_cap
+# bndbox
 ## 起動方法
 ### 必要なライブラリ<br>
 - numpy
