@@ -49,21 +49,29 @@ def ReadXml(x_file):
 
 # show img to cv2 window
 def ShowImg(filename, coords):
+    # read image
     image  = "data/" + filename + ".jpg"
     img    = cv2.imread(image)
     wname  = image
     cv2.namedWindow(wname)
+
+    # draw rectangle
     for coord in coords:
         cv2.rectangle(img,
                       (coord[0][0],coord[0][1]),
                       (coord[1][0],coord[1][1]),
                       (0,255,0),
                       1)
+    # show image
     cv2.imshow(wname, img)
+
+    # wait key
     key = cv2.waitKey(0) & 0xFF
+
     if key == ord("q"):
         cv2.destroyAllWindows()
         exit("終了します。")
+
     elif key == ord("n"):
         cv2.destroyAllWindows()
         print("次の画像を表示します")
@@ -71,8 +79,10 @@ def ShowImg(filename, coords):
 # main
 if __name__ == "__main__":
     x_files = GetFile()
+
     for x_file in x_files:
         filename, coords = ReadXml(x_file)
         print("画像ファイル名 => " + filename + ".jpg")
         ShowImg(filename, coords)
+
     print("すべての画像を表示し終えました。")
