@@ -101,8 +101,8 @@ def onMouse(event, x, y, flag, params):
             y_list = [y, ptlist.ptlist[0][1]]
             y_list.sort()
             cv2.rectangle(img3,
-                          (x_list[0], y_list[1]),
-                          (x_list[1], y_list[0]),
+                          (x_list[0], y_list[0]),
+                          (x_list[1], y_list[1]),
                           color=(0, 255, 255),
                           thickness=1)
             cv2.imshow(wname, img3)
@@ -122,8 +122,8 @@ def onMouse(event, x, y, flag, params):
         if ptlist.pos == 2:
             global upper_left
             global lower_right
-            upper_left = [np.min(ptlist.ptlist, axis=0)[0], np.max(ptlist.ptlist, axis=0)[1]]
-            lower_right = [np.max(ptlist.ptlist, axis=0)[0], np.min(ptlist.ptlist, axis=0)[1]]
+            upper_left = [np.min(ptlist.ptlist, axis=0)[0], np.min(ptlist.ptlist, axis=0)[1]]
+            lower_right = [np.max(ptlist.ptlist, axis=0)[0], np.max(ptlist.ptlist, axis=0)[1]]
             cv2.rectangle(img,
                           (upper_left[0], upper_left[1]),
                           (lower_right[0], lower_right[1]),
@@ -134,7 +134,6 @@ if __name__ == '__main__':
     os.makedirs("data", exist_ok = True)
     os.makedirs("xml",  exist_ok = True)
 
-    cwd   = os.getcwd()
     files = glob.glob("data/*.jpg")
 
     if not files:
@@ -192,9 +191,9 @@ if __name__ == '__main__':
                 elif key2 == ord("c"):
                     names.append("Cymothoidae")
                     bndboxs.append([upper_left[0],
-                                   lower_right[1],
+                                    upper_left[1],
                                    lower_right[0],
-                                   upper_left[1]])
+                                   lower_right[1]])
                     print("オブジェクトを追加しました。")
                     print("    オブジェクト名 => {}\n    座標 => (x min => {}, y min => {}, x max => {}, y max => {})\n".format(names[-1], bndboxs[-1][0], bndboxs[-1][1], bndboxs[-1][2], bndboxs[-1][3]))
                     print("オブジェクトを全て選び終えた場合、X キーによって出力、次の画像へ。\n")
