@@ -3,8 +3,6 @@
 #
 
 # import libraries
-import os
-import sys
 import glob
 import xml.etree.ElementTree as et
 import xml.dom.minidom as md
