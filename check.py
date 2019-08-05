@@ -4,6 +4,7 @@
 
 # import libraries
 import glob
+import os
 import xml.etree.ElementTree as et
 import xml.dom.minidom as md
 import cv2
@@ -49,6 +50,10 @@ def ReadXml(x_file):
 def ShowImg(filename, coords):
     # read image
     image  = "data/" + filename + ".jpg"
+    if not os.path.exists(image):
+        print("'" + image + "' は存在しませんでした。\n"
+              "次の画像に進みます。")
+        return
     img    = cv2.imread(image)
     wname  = image
     cv2.namedWindow(wname)
