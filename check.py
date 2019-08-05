@@ -51,8 +51,7 @@ def ShowImg(filename, coords):
     # read image
     image  = "data/" + filename + ".jpg"
     if not os.path.exists(image):
-        print("'" + image + "' は存在しませんでした。\n"
-              "次の画像に進みます。")
+        print("'{}' は存在しませんでした。\n次の画像に進みます。".format(image))
         return
     img    = cv2.imread(image)
     wname  = image
