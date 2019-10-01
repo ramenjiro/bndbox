@@ -16,7 +16,7 @@ def GetFile():
     x_files = glob.glob("xml/*.xml")
 
     # exit if no files
-    if not (x_files or files):
+    if not (x_files):
         exit("XML形式のファイルが見つかりませんでした。")
 
     # sort
